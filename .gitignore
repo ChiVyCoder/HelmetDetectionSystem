@@ -1,0 +1,24 @@
+# Node
+node_modules/
+dist/
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Models & media (nặng, không nên commit lên git)
+ai-service/models/*.pt
+ai-service/models/*_openvino_model/
+ai-service/static/*.mp4
+ai-service/temp/
+backend/uploads/*
+backend/temp_results/*
+!backend/uploads/.gitkeep
+!backend/temp_results/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
