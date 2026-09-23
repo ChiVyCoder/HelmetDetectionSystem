@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trắc Nghiệm Lập Trình Python</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f4f6f9; color: #333; margin: 0; padding: 20px; }
+    .quiz-container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    h1 { text-align: center; color: #2c3e50; }
+    .question-block { margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0; }
+    .question-title { font-weight: bold; margin-bottom: 10px; font-size: 16px; }
+    .options { list-style: none; padding: 0; }
+    .options li { margin-bottom: 8px; }
+    .options label { cursor: pointer; display: block; padding: 8px 12px; border-radius: 4px; border: 1px solid #ddd; transition: 0.2s; }
+    .options label:hover { background-color: #f0f7ff; border-color: #3498db; }
+    .explanation { margin-top: 10px; padding: 10px; border-radius: 4px; display: none; font-size: 14px; }
+    .correct { background-color: #e8f8f5; border-left: 5px solid #2ecc71; color: #27ae60; }
+    .incorrect { background-color: #fdf2e9; border-left: 5px solid #e74c3c; color: #c0392b; }
+    button { display: block; width: 100%; padding: 12px; background-color: #3498db; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: bold; }
+    button:hover { background-color: #2980b9; }
+    #result-box { text-align: center; font-size: 18px; font-weight: bold; margin-top: 20px; color: #2c3e50; }
+    pre { background: #2d3436; color: #dfe6e9; padding: 10px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+<div class="quiz-container">
+  <h1>Ôn Tập Trắc Nghiệm Python</h1>
+  <form id="quizForm">
+
+    <!-- Câu 1 -->
+    <div class="question-block" data-answer="C">
+      <div class="question-title">Câu 1: Ngôn ngữ Python được tạo ra bởi ai và phát hành lần đầu vào năm nào?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q1" value="A"> A. Dennis Ritchie, 1972</label></li>
+        <li><label><input type="radio" name="q1" value="B"> B. James Gosling, 1995</label></li>
+        <li><label><input type="radio" name="q1" value="C"> C. Guido van Rossum, 1991</label></li>
+        <li><label><input type="radio" name="q1" value="D"> D. Bjarne Stroustrup, 1985</label></li>
+      </ul>
+      <div class="explanation"><strong>Giải thích:</strong> Python do Guido van Rossum tạo ra tại CWI (Hà Lan) và phát hành lần đầu vào năm 1991.</div>
+    </div>
+
+    <!-- Câu 2 -->
+    <div class="question-block" data-answer="B">
+      <div class="question-title">Câu 2: Để xác định một khối lệnh (code block) trong Python, cú pháp bắt buộc phải dùng là gì?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q2" value="A"> A. Cặp dấu ngoặc nhọn {}</label></li>
+        <li><label><input type="radio" name="q2" value="B"> B. Thụt đầu dòng (Indentation)</label></li>
+        <li><label><input type="radio" name="q2" value="C"> C. Cặp từ khóa begin ... end</label></li>
+        <li><label><input type="radio" name="q2" value="D"> D. Cặp dấu ngoặc đơn ()</label></li>
+      </ul>
+      <div class="explanation"><strong>Giải thích:</strong> Python bắt buộc dùng thụt đầu dòng (thường là 4 khoảng trắng). Vi phạm sẽ báo lỗi IndentationError.</div>
+    </div>
+
+    <!-- Câu 3 -->
+    <div class="question-block" data-answer="B">
+      <div class="question-title">Câu 3: Kết quả của biểu thức <code>17 // 3</code> trong Python là gì?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q3" value="A"> A. 5.666666666666667</label></li>
+        <li><label><input type="radio" name="q3" value="B"> B. 5</label></li>
+        <li><label><input type="radio" name="q3" value="C"> C. 2</label></li>
+        <li><label><input type="radio" name="q3" value="D"> D. 5.0</label></li>
+      </ul>
+      <div class="explanation"><strong>Giải thích:</strong> Toán tử <code>//</code> là phép chia lấy phần nguyên (17 chia 3 được 5 dư 2).</div>
+    </div>
+
+    <!-- Câu 4 -->
+    <div class="question-block" data-answer="C">
+      <div class="question-title">Câu 4: Khi nhập số 10, kiểu dữ liệu mặc định của biến trong lệnh <code>val = input("Nhập: ")</code> là gì?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q4" value="A"> A. int</label></li>
+        <li><label><input type="radio" name="q4" value="B"> B. float</label></li>
+        <li><label><input type="radio" name="q4" value="C"> C. str</label></li>
+        <li><label><input type="radio" name="q4" value="D"> D. bool</label></li>
+      </ul>
+      <div class="explanation"><strong>Giải thích:</strong> Hàm <code>input()</code> luôn trả về kiểu chuỗi (<code>str</code>).</div>
+    </div>
+
+    <!-- Câu 5 -->
+    <div class="question-block" data-answer="B">
+      <div class="question-title">Câu 5: Trong định nghĩa hàm, tham số biến động <code>*args</code> gom các đối số truyền vào thành kiểu dữ liệu nào?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q5" value="A"> A. list</label></li>
+        <li><label><input type="radio" name="q5" value="B"> B. tuple</label></li>
+        <li><label><input type="radio" name="q5" value="C"> C. set</label></li>
+        <li><label><input type="radio" name="q5" value="D"> D. dict</label></li>
+      </ul>
+      <div class="explanation"><strong>Giải thích:</strong> <code>*args</code> tự động gom các đối số vị trí truyền vào thành một <code>tuple</code>.</div>
+    </div>
+
+    <!-- Câu 6 -->
+    <div class="question-block" data-answer="D">
+      <div class="question-title">Câu 6: Nếu hàm không chứa lệnh return hoặc chỉ gọi return rỗng, giá trị ngầm định trả về là gì?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q6" value="A"> A. 0</label></li>
+        <li><label><input type="radio" name="q6" value="B"> B. False</label></li>
+        <li><label><input type="radio" name="q6" value="C"> C. ""</label></li>
+        <li><label><input type="radio" name="q6" value="D"> D. None</label></li>
+      </ul>
+      <div class="explanation"><strong>Giải thích:</strong> Nếu không return giá trị cụ thể, Python mặc định trả về đối tượng <code>None</code>.</div>
+    </div>
+
+    <!-- Câu 7 -->
+    <div class="question-block" data-answer="B">
+      <div class="question-title">Câu 7: Muốn chỉnh sửa giá trị của biến toàn cục từ bên trong hàm, ta dùng từ khóa nào?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q7" value="A"> A. nonlocal</label></li>
+        <li><label><input type="radio" name="q7" value="B"> B. global</label></li>
+        <li><label><input type="radio" name="q7" value="C"> C. extern</label></li>
+        <li><label><input type="radio" name="q7" value="D"> D. static</label></li>
+      </ul>
+      <div class="explanation"><strong>Giải thích:</strong> Từ khóa <code>global ten_bien</code> cho phép sửa trực tiếp biến toàn cục trong hàm.</div>
+    </div>
+
+    <!-- Câu 8 -->
+    <div class="question-block" data-answer="C">
+      <div class="question-title">Câu 8: Hàm nào trong mô-đun <code>os</code> dùng để lấy thư mục làm việc hiện tại?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q8" value="A"> A. os.name</label></li>
+        <li><label><input type="radio" name="q8" value="B"> B. os.listdir()</label></li>
+        <li><label><input type="radio" name="q8" value="C"> C. os.getcwd()</label></li>
+        <li><label><input type="radio" name="q8" value="D"> D. os.path.exists()</label></li>
+      </ul>
+      <div class="explanation"><strong>Giải thích:</strong> <code>os.getcwd()</code> viết tắt của <i>Get Current Working Directory</i>.</div>
+    </div>
+
+    <!-- Câu 9 -->
+    <div class="question-block" data-answer="C">
+      <div class="question-title">Câu 9: Tên phương thức khởi tạo (Constructor) trong OOP Python là gì?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q9" value="A"> A. __construct__()</label></li>
+        <li><label><input type="radio" name="q9" value="B"> B. __new__()</label></li>
+        <li><label><input type="radio" name="q9" value="C"> C. __init__()</label></li>
+        <li><label><input type="radio" name="q9" value="D"> D. __start__()</label></li>
+      </ul>
+      <div class="explanation"><strong>Giải thích:</strong> Phương thức <code>__init__()</code> tự động chạy khi đối tượng được khởi tạo.</div>
+    </div>
+
+    <!-- Câu 10 -->
+    <div class="question-block" data-answer="C">
+      <div class="question-title">Câu 10: Tham số đầu tiên trong phương thức thể hiện (instance method) quy ước đặt tên là gì?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q10" value="A"> A. this</label></li>
+        <li><label><input type="radio" name="q10" value="B"> B. base</label></li>
+        <li><label><input type="radio" name="q10" value="C"> C. self</label></li>
+        <li><label><input type="radio" name="q10" value="D"> D. cls</label></li>
+      </ul>
+      <div class="explanation"><strong>Giải thích:</strong> <code>self</code> đại diện cho chính đối tượng thể hiện đang gọi hàm (tương tự <code>this</code> trong C#).</div>
+    </div>
+
+    <!-- Câu 11 -->
+    <div class="question-block" data-answer="B">
+      <div class="question-title">Câu 11: Nhóm kiểu dữ liệu nào dưới đây thuộc nhóm Bất biến (Immutable)?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q11" value="A"> A. list, dict, set</label></li>
+        <li><label><input type="radio" name="q11" value="B"> B. int, str, tuple</label></li>
+        <li><label><input type="radio" name="q11" value="C"> C. int, list, str</label></li>
+        <li><label><input type="radio" name="q11" value="D"> D. set, tuple, float</label></li>
+      </ul>
+      <div class="explanation"><strong>Giải thích:</strong> Các kiểu số, chuỗi (<code>str</code>) và <code>tuple</code> không thể thay đổi nội dung ô nhớ sau khi tạo.</div>
+    </div>
+
+    <!-- Câu 12 -->
+    <div class="question-block" data-answer="C">
+      <div class="question-title">Câu 12: Khai báo nào sau đây tạo một Tuple có đúng 1 phần tử là số nguyên 5?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q12" value="A"> A. t = (5)</label></li>
+        <li><label><input type="radio" name="q12" value="B"> B. t = tuple(5)</label></li>
+        <li><label><input type="radio" name="q12" value="C"> C. t = (5,)</label></li>
+        <li><label><input type="radio" name="q12" value="D"> D. t = [5]</label></li>
+      </ul>
+      <div class="explanation"><strong>Giải thích:</strong> Tuple 1 phần tử bắt buộc phải có dấu phẩy ở cuối: <code>(5,)</code>.</div>
+    </div>
+
+    <!-- Câu 13 -->
+    <div class="question-block" data-answer="B">
+      <div class="question-title">Câu 13: Cú pháp chuẩn để tạo một Tập hợp rỗng (empty Set) là gì?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q13" value="A"> A. s = {}</label></li>
+        <li><label><input type="radio" name="q13" value="B"> B. s = set()</label></li>
+        <li><label><input type="radio" name="q13" value="C"> C. s = set([])</label></li>
+        <li><label><input type="radio" name="q13" value="D"> D. s = []</label></li>
+      </ul>
+      <div class="explanation"><strong>Giải thích:</strong> Cặp dấu <code>{}</code> là Dictionary rỗng, muốn tạo set rỗng phải dùng hàm <code>set()</code>.</div>
+    </div>
+
+    <!-- Câu 14 -->
+    <div class="question-block" data-answer="B">
+      <div class="question-title">Câu 14: Điểm khác biệt giữa <code>discard(x)</code> và <code>remove(x)</code> khi xóa phần tử trong Set là gì?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q14" value="A"> A. remove xóa phần tử đầu, discard xóa phần tử cuối</label></li>
+        <li><label><input type="radio" name="q14" value="B"> B. discard không báo lỗi nếu phần tử không tồn tại, còn remove gây KeyError</label></li>
+        <li><label><input type="radio" name="q14" value="C"> C. discard chỉ xóa được số</label></li>
+        <li><label><input type="radio" name="q14" value="D"> D. discard xóa an toàn và trả về giá trị</label></li>
+      </ul>
+      <div class="explanation"><strong>Giải thích:</strong> <code>.discard()</code> kiểm tra an toàn và không ném lỗi <code>KeyError</code> nếu phần tử không tồn tại.</div>
+    </div>
+
+    <!-- Câu 15 -->
+    <div class="question-block" data-answer="C">
+      <div class="question-title">Câu 15: Phương thức nào lấy giá trị từ Dictionary theo key mà không gây lỗi nếu key không tồn tại?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q15" value="A"> A. d[key]</label></li>
+        <li><label><input type="radio" name="q15" value="B"> B. d.find(key)</label></li>
+        <li><label><input type="radio" name="q15" value="C"> C. d.get(key, default)</label></li>
+        <li><label><input type="radio" name="q15" value="D"> D. d.search(key)</label></li>
+      </ul>
+      <div class="explanation"><strong>Giải thích:</strong> <code>d.get(key, default)</code> trả về giá trị default khi key không tồn tại thay vì dừng chương trình.</div>
+    </div>
+
+    <!-- Câu 16 -->
+    <div class="question-block" data-answer="C">
+      <div class="question-title">Câu 16: Khi mở tập tin, chế độ mode nào cho phép ghi tiếp vào cuối file mà không xóa nội dung cũ?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q16" value="A"> A. 'r'</label></li>
+        <li><label><input type="radio" name="q16" value="B"> B. 'w'</label></li>
+        <li><label><input type="radio" name="q16" value="C"> C. 'a'</label></li>
+        <li><label><input type="radio" name="q16" value="D"> D. 'x'</label></li>
+      </ul>
+      <div class="explanation"><strong>Giải thích:</strong> Chế độ <code>'a'</code> (Append) giúp ghi tiếp dữ liệu vào đuôi file. Chế độ <code>'w'</code> sẽ ghi đè xóa sạch nội dung cũ.</div>
+    </div>
+
+    <!-- Câu 17 -->
+    <div class="question-block" data-answer="C">
+      <div class="question-title">Câu 17: Kết quả của câu lệnh <code>print(eval("3 + 4 * 2"))</code> là gì?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q17" value="A"> A. "3 + 4 * 2"</label></li>
+        <li><label><input type="radio" name="q17" value="B"> B. 14</label></li>
+        <li><label><input type="radio" name="q17" value="C"> C. 11</label></li>
+        <li><label><input type="radio" name="q17" value="D"> D. Lỗi cú pháp</label></li>
+      </ul>
+      <div class="explanation"><strong>Giải thích:</strong> <code>eval()</code> tính toán chuỗi: nhân trước cộng sau: 4 * 2 = 8, 8 + 3 = 11.</div>
+    </div>
+
+    <!-- Câu 18 -->
+    <div class="question-block" data-answer="B">
+      <div class="question-title">Câu 18: Trình quản lý gói tiêu chuẩn để cài đặt thư viện ngoài trong Python là gì?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q18" value="A"> A. npm</label></li>
+        <li><label><input type="radio" name="q18" value="B"> B. pip</label></li>
+        <li><label><input type="radio" name="q18" value="C"> C. composer</label></li>
+        <li><label><input type="radio" name="q18" value="D"> D. nuget</label></li>
+      </ul>
+      <div class="explanation"><strong>Giải thích:</strong> Lệnh chuẩn là <code>pip install [tên_gói]</code>.</div>
+    </div>
+
+    <!-- Câu 19 -->
+    <div class="question-block" data-answer="C">
+      <div class="question-title">Câu 19: Framework web nào dưới đây là một Full-stack Web Framework của Python?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q19" value="A"> A. Flask</label></li>
+        <li><label><input type="radio" name="q19" value="B"> B. FastAPI</label></li>
+        <li><label><input type="radio" name="q19" value="C"> C. Django</label></li>
+        <li><label><input type="radio" name="q19" value="D"> D. Tkinter</label></li>
+      </ul>
+      <div class="explanation"><strong>Giải thích:</strong> Django là full-stack framework; Flask là micro-framework; FastAPI tối ưu build API; Tkinter là thư viện đồ họa Desktop (GUI).</div>
+    </div>
+
+    <!-- Câu 20 -->
+    <div class="question-block" data-answer="A">
+      <div class="question-title">Câu 20: Thư viện nào thường dùng để đọc, ghi file Excel (.xlsx) trong tự động hóa văn phòng?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q20" value="A"> A. openpyxl</label></li>
+        <li><label><input type="radio" name="q20" value="B"> B. python-docx</label></li>
+        <li><label><input type="radio" name="q20" value="C"> C. Pillow</label></li>
+        <li><label><input type="radio" name="q20" value="D"> D. BeautifulSoup4</label></li>
+      </ul>
+      <div class="explanation"><strong>Giải thích:</strong> <code>openpyxl</code> chuyên xử lý Excel; <code>python-docx</code> xử lý Word; <code>Pillow</code> xử lý ảnh.</div>
+    </div>
+
+    <button type="button" onclick="submitQuiz()">Nộp Bài & Xem Điểm</button>
+  </form>
+
+  <div id="result-box"></div>
+</div>
+
+<script>
+function submitQuiz() {
+  const blocks = document.querySelectorAll('.question-block');
+  let score = 0;
+  
+  blocks.forEach((block, index) => {
+    const qName = 'q' + (index + 1);
+    const selected = document.querySelector(`input[name="${qName}"]:checked`);
+    const correctAnswer = block.getAttribute('data-answer');
+    const explanation = block.querySelector('.explanation');
+    
+    explanation.style.display = 'block';
+    
+    if (selected && selected.value === correctAnswer) {
+      score++;
+      explanation.className = 'explanation correct';
+      explanation.innerHTML = '<strong>Đúng!</strong> ' + explanation.innerHTML;
+    } else {
+      explanation.className = 'explanation incorrect';
+      explanation.innerHTML = `<strong>Sai rồi! Đáp án đúng là ${correctAnswer}.</strong> ` + explanation.innerHTML;
+    }
+  });
+
+  const resultBox = document.getElementById('result-box');
+  resultBox.innerHTML = `Bạn đạt được: ${score} / ${blocks.length} điểm!`;
+  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>

@@ -7,9 +7,6 @@ Yêu cầu: đã đặt file best_45epoch.pt và yolov8n.pt trong thư mục mod
 """
 
 import pathlib
-
-# ---- VÁ LỖI WINDOWS: "WinError 1337 - security ID structure is invalid" ----
-# PHẢI đặt trước khi import ultralytics - xem giải thích chi tiết trong main.py
 _original_path_exists = pathlib.Path.exists
 
 
@@ -21,7 +18,6 @@ def _safe_path_exists(self, *args, **kwargs):
 
 
 pathlib.Path.exists = _safe_path_exists
-# ---- Hết phần vá lỗi ----
 
 from ultralytics import YOLO
 

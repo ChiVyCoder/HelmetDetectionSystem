@@ -17,11 +17,10 @@ async function analyzeVideo(req, res) {
     const filePath = req.file.path;
 
     try {
-        // Bước 1: AI Service xử lý video (không đổi so với trước)
+        // Bước 1: Gọi AI Service xử lý video
         const aiResult = await analyzeVideoWithAI(filePath);
 
         // Bước 2: Tải video đã xử lý về từ AI Service, upload lên Supabase Storage
-        // để có URL vĩnh viễn (không phụ thuộc AI Service còn chạy hay không)
         const { videoUrl, storagePath } = await uploadVideoToStorage(
             aiResult.video_url,
             config.AI_SERVICE_URL
@@ -35,13 +34,29 @@ async function analyzeVideo(req, res) {
             stats: aiResult.stats,
         });
 
+        // Bước 4: Trả về response chuẩn hóa cho Dashboard / Frontend
         return res.json({
             id: analysis.id,
             originalName: analysis.original_name,
             processedAt: analysis.processed_at,
             videoUrl: analysis.video_url,
+            storagePath: analysis.video_storage_path,
+            performance: {
+                totalFrames: analysis.total_frames,
+                videoFps: analysis.video_fps,
+                videoDurationSec: analysis.video_duration_sec,
+                videoDurationFormatted: analysis.video_duration_formatted,
+                totalProcessingTimeSec: analysis.total_processing_time_sec,
+                totalProcessingTimeFormatted: analysis.total_processing_time_formatted,
+                avgMsPerFrame: analysis.avg_ms_per_frame,
+                processingFps: analysis.processing_fps,
+                speedFactor: analysis.speed_factor
+            },
             stats: {
-                ...aiResult.stats,
+                with_helmet_count: analysis.with_helmet_count,
+                without_helmet_count: analysis.without_helmet_count,
+                unique_riders_tracked: analysis.unique_riders_tracked,
+                violation_rate_percent: analysis.violation_rate_percent,
                 violation_events: violationEvents.map((e) => ({
                     track_id: e.track_id,
                     timestamp_sec: e.timestamp_sec,
@@ -49,10 +64,10 @@ async function analyzeVideo(req, res) {
                     plate_text: e.plate_text,
                     plate_confidence: e.plate_confidence,
                     box: e.box,
-                    plate_image_url: e.plate_image_url,   // ← URL thật, đã upload xong
+                    plate_image_url: e.plate_image_url,
                 })),
             },
-});
+        });
     } catch (error) {
         console.error('Lỗi xử lý video:', error.message);
         return res.status(502).json({

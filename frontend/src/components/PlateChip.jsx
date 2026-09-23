@@ -1,7 +1,6 @@
+import { CameraOff } from 'lucide-react';
+
 export default function PlateChip({ text, imageUrl }) {
-    // Có ảnh crop thật (model đã tìm thấy vị trí biển số, dù OCR đọc được hay không)
-    // -> hiển thị TRỰC TIẾP ảnh gốc, không bắt người dùng bấm thêm link mới xem được.
-    // Text OCR (nếu có) hiện như phụ đề bên dưới ảnh, giúp đối chiếu nhanh 1 lần nhìn.
     if (imageUrl) {
         return (
             <a
@@ -9,13 +8,20 @@ export default function PlateChip({ text, imageUrl }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Nhấn để xem ảnh cỡ lớn"
-                className="flex h-12 w-28 shrink-0 flex-col overflow-hidden rounded-md border-2 border-slate-900 bg-black shadow-inner transition-opacity hover:opacity-90"
+                className="flex h-14 w-32 shrink-0 flex-col overflow-hidden rounded border border-gray-400 bg-gray-200 shadow-sm transition-opacity hover:opacity-80"
             >
-                <img src={imageUrl} alt="Ảnh biển số vi phạm" className="h-8 w-full object-contain" />
-                <div className={`flex h-4 items-center justify-center ${text ? 'bg-white' : 'bg-slate-900'}`}>
+                <img 
+                    src={imageUrl} 
+                    alt="Ảnh biển số vi phạm" 
+                    className="h-9 w-full object-contain p-0.5" 
+                />
+                
+                <div className={`flex flex-1 items-center justify-center border-t border-gray-300 ${text ? 'bg-white' : 'bg-gray-100'}`}>
                     <span
-                        className={`font-mono text-[10px] font-semibold tracking-wide ${
-                            text ? 'text-slate-900' : 'italic text-slate-500'
+                        className={`font-mono text-[11px] ${
+                            text 
+                                ? 'font-bold uppercase tracking-widest text-gray-900' // Font đậm, giãn chữ giống biển số thật
+                                : 'italic text-gray-500' // In nghiêng, mờ nếu không có text
                         }`}
                     >
                         {text || 'Chưa đọc được'}
@@ -25,10 +31,12 @@ export default function PlateChip({ text, imageUrl }) {
         );
     }
 
-    // Không có ảnh - model chưa từng tìm thấy vị trí biển số nào trong khung xe này
+    // Không có ảnh - Trạng thái trống (Empty State)
     return (
-        <div className="flex h-12 w-28 shrink-0 flex-col items-center justify-center gap-0.5 rounded-md border border-dashed border-slate-700 bg-slate-900">
-            <span className="text-xs italic text-slate-500">Chưa đọc được</span>
+        /* Giả lập một vùng Control bị vô hiệu hóa (Disabled) hoặc chưa có dữ liệu */
+        <div className="flex h-14 w-32 shrink-0 flex-col items-center justify-center gap-1 rounded border border-dashed border-gray-400 bg-gray-50">
+            <CameraOff className="h-4 w-4 text-gray-400" />
+            <span className="text-[10px] italic text-gray-500">Không có ảnh</span>
         </div>
     );
 }

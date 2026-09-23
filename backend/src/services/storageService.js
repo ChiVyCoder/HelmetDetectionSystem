@@ -59,54 +59,60 @@ async function uploadPlateImageToStorage(plateImagePath, aiServiceBaseUrl) {
  * Lưu 1 record phân tích video + toàn bộ violation_events liên quan vào Supabase.
  */
 async function saveAnalysisRecord({ originalName, videoUrl, storagePath, stats }) {
-    const { data: analysis, error: insertError } = await supabase
+    // 1. Lưu bản ghi phân tích tổng quan
+    const { data: analysis, error: analysisError } = await supabase
         .from('video_analyses')
-        .insert({
-            original_name: originalName,
-            video_url: videoUrl,
-            video_storage_path: storagePath,
-            total_frames: stats.total_frames,
-            processing_time_sec: stats.processing_time_sec,
-            avg_ms_per_frame: stats.avg_ms_per_frame,
-            with_helmet_count: stats.with_helmet_count,
-            without_helmet_count: stats.without_helmet_count,
-            unique_riders_tracked: stats.unique_riders_tracked,
-            violation_rate_percent: stats.violation_rate_percent,
-        })
+        .insert([
+            {
+                original_name: originalName,
+                video_url: videoUrl,
+                video_storage_path: storagePath,
+                with_helmet_count: stats.with_helmet_count ?? 0,
+                without_helmet_count: stats.without_helmet_count ?? 0,
+                unique_riders_tracked: stats.unique_riders_tracked ?? 0,
+                violation_rate_percent: stats.violation_rate_percent ?? 0,
+                // ---- Các trường thời gian & hiệu năng mới ----
+                total_frames: stats.total_frames ?? 0,
+                video_fps: stats.video_fps ?? 0,
+                video_duration_sec: stats.video_duration_sec ?? 0,
+                video_duration_formatted: stats.video_duration_formatted ?? '00:00',
+                total_processing_time_sec: stats.total_processing_time_sec ?? 0,
+                total_processing_time_formatted: stats.total_processing_time_formatted ?? '00:00',
+                avg_ms_per_frame: stats.avg_ms_per_frame ?? 0,
+                processing_fps: stats.processing_fps ?? 0,
+                speed_factor: stats.speed_factor ?? 0,
+                processed_at: new Date().toISOString()
+            }
+        ])
         .select()
         .single();
 
-    if (insertError) {
-        throw new Error(`Lưu video_analyses thất bại: ${insertError.message}`);
+    if (analysisError) throw analysisError;
+
+    // 2. Lưu danh sách vi phạm (violation_events) nếu có
+    let violationEvents = [];
+    if (stats.violation_events && stats.violation_events.length > 0) {
+        const eventsToInsert = stats.violation_events.map((e) => ({
+            analysis_id: analysis.id,
+            track_id: e.track_id,
+            timestamp_sec: e.timestamp_sec,
+            confidence: e.confidence,
+            plate_text: e.plate_text,
+            plate_confidence: e.plate_confidence,
+            box: e.box,
+            plate_image_url: e.plate_image_url || null
+        }));
+
+        const { data: insertedEvents, error: eventsError } = await supabase
+            .from('violation_events')
+            .insert(eventsToInsert)
+            .select();
+
+        if (eventsError) throw eventsError;
+        violationEvents = insertedEvents;
     }
 
-    const events = stats.violation_events || [];
-
-    if (events.length === 0) {
-        return { analysis, violationEvents: [] };
-    }
-
-    const rows = await Promise.all(events.map(async (e) => ({
-        analysis_id: analysis.id,
-        track_id: e.track_id,
-        timestamp_sec: e.timestamp_sec,
-        confidence: e.confidence,
-        plate_text: e.plate_text,
-        plate_confidence: e.plate_confidence,
-        box: e.box,
-        plate_image_url: await uploadPlateImageToStorage(e.plate_image_path, config.AI_SERVICE_URL),
-    })));
-
-    const { data: insertedEvents, error: eventsError } = await supabase
-        .from('violation_events')
-        .insert(rows)
-        .select();
-
-    if (eventsError) {
-        throw new Error(`Lưu violation_events thất bại: ${eventsError.message}`);
-    }
-
-    return { analysis, violationEvents: insertedEvents || [] };
+    return { analysis, violationEvents };
 }
 
 /**

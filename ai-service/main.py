@@ -84,10 +84,10 @@ if os.path.isfile(MODEL_PLATE_PT):
         ocr_reader = easyocr.Reader(['en'])
         print("Tính năng đọc biển số: BẬT")
     except ImportError:
-        print("⚠️  Chưa cài easyocr (pip install easyocr) — tính năng đọc biển số: TẮT")
+        print("Chưa cài easyocr (pip install easyocr) — tính năng đọc biển số: TẮT")
         model_plate = None
 else:
-    print(f"⚠️  Không tìm thấy {MODEL_PLATE_PT} — tính năng đọc biển số: TẮT")
+    print(f"Không tìm thấy {MODEL_PLATE_PT} — tính năng đọc biển số: TẮT")
 
 print(f"CUDA available: {torch.cuda.is_available()}")
 print("AI Service sẵn sàng.")
@@ -96,7 +96,7 @@ print("=" * 50)
 
 @app.get("/health")
 async def health_check():
-    """Endpoint để Backend kiểm tra AI Service còn sống không."""
+    """Endpoint để Backend kiểm tra AI Service còn hoạt động không."""
     return {
         "status": "ok",
         "cuda_available": torch.cuda.is_available(),

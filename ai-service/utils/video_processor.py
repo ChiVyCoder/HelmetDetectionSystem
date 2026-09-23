@@ -4,6 +4,8 @@ kết hợp bằng cơ chế tracking-based (track_id chỉ cần khớp 1 lần
 suốt vòng đời là được xác nhận vĩnh viễn), ghi kết quả ra file video mới.
 """
 
+from sympy import fps
+
 import cv2
 import os
 import time
@@ -24,6 +26,13 @@ HELMET_IMGSZ = 640
 COCO_IMGSZ = 480
 LOG_EVERY_N_FRAMES = 30
 
+def format_seconds_to_time_str(seconds: float) -> str:
+    """Chuyển đổi giây sang định dạng HH:MM:SS hoặc MM:SS"""
+    m, s = divmod(int(seconds), 60)
+    h, m = divmod(m, 60)
+    if h > 0:
+        return f"{h:02d}:{m:02d}:{s:02d}"
+    return f"{m:02d}:{s:02d}"
 
 def prepare_video_for_processing(input_path):
     """
@@ -58,10 +67,10 @@ def prepare_video_for_processing(input_path):
         subprocess.run(cmd, check=True, capture_output=True)
         return output_path
     except FileNotFoundError:
-        print("⚠️  Không tìm thấy ffmpeg — bỏ qua chuẩn hóa, xử lý video gốc.")
+        print("Không tìm thấy ffmpeg — bỏ qua chuẩn hóa, xử lý video gốc.")
         return input_path
     except subprocess.CalledProcessError as e:
-        print(f"⚠️  ffmpeg lỗi: {e.stderr.decode() if e.stderr else e}")
+        print(f"ffmpeg lỗi: {e.stderr.decode() if e.stderr else e}")
         return input_path
 
 
@@ -82,6 +91,8 @@ def process_video_offline(input_path, output_path, model_helmet, model_coco,
     if fps == 0 or fps is None or fps != fps:
         fps = 30.0
 
+    total_video_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    video_duration_sec = round(total_video_frames / fps, 2) if fps > 0 else 0
     if os.path.exists(output_path):
         try:
             os.remove(output_path)
@@ -111,7 +122,7 @@ def process_video_offline(input_path, output_path, model_helmet, model_coco,
     plate_success_count = 0    # số lần đọc thành công (để debug)
     coco_run_count = 0         # số lần model COCO thực sự chạy (để debug)
     coco_moto_found_count = 0  # tổng số box xe máy COCO tìm được qua các lần chạy
-
+    best_plate_candidates = {} #lưu ứng viên frame tốt nhất để đọc biển số
     frame_count = 0
     t_start = time.time()
 
@@ -195,30 +206,21 @@ def process_video_offline(input_path, output_path, model_helmet, model_coco,
                             }
 
                         # 4. CHẠY OCR KHI ĐÃ CỨU SỐNG THÀNH CÔNG KHUNG XE
-                        if (model_plate is not None and ocr_reader is not None
-                                and cls_id == 1 and track_id not in plate_attempted):
+                        # 4. KHÔNG CHẠY OCR NGAY - CHỈ CẬP NHẬT FRAME RÕ NÉT NHẤT (BOX TO NHẤT)
+                        if model_plate is not None and ocr_reader is not None and cls_id == 1:
+                            # Tính diện tích vùng xe
+                            bx1, by1, bx2, by2 = matched_moto_box
+                            current_area = (bx2 - bx1) * (by2 - by1)
                             
-                            plate_attempted.add(track_id)
-                            plate_attempt_count += 1
-                            try:
-                                plate_info = read_plate_from_region(
-                                    frame, matched_moto_box, model_plate, ocr_reader, track_id
-                                )
-                                if plate_info:
-                                    plate_results[track_id] = plate_info
-                                    plate_success_count += 1
-                                    
-                                    # Vẽ khung bao biển số ảo màu vàng Cyan lên video để biểu diễn
-                                    cv2.rectangle(annotated_frame, (matched_moto_box[0], matched_moto_box[1]), 
-                                                  (matched_moto_box[2], matched_moto_box[3]), (255, 255, 0), 2)
-                                                  
-                                    print(f"✅ Đọc biển số track {track_id}: "
-                                          f"'{plate_info['plate_text']}' "
-                                          f"(ocr_conf={plate_info['plate_confidence']})")
-                                else:
-                                    print(f"❌ Track {track_id}: Đã ném vào OCR nhưng không thấy chữ")
-                            except Exception as e:
-                                print(f"⚠️ Lỗi OCR track {track_id}: {e}")
+                            # Chỉ xem xét nếu xe đủ lớn (ví dụ chiều cao tối thiểu 50px) để loại bỏ xe ở quá xa
+                            if (by2 - by1) >= 50:
+                                prev_best = best_plate_candidates.get(track_id)
+                                if prev_best is None or current_area > prev_best["area"]:
+                                    best_plate_candidates[track_id] = {
+                                        "frame": frame.copy(),          # Lưu lại bản copy của frame rõ nhất
+                                        "box": matched_moto_box,
+                                        "area": current_area
+                                    }
 
                     # 5. Vẽ giao diện nón bảo hiểm (Không bị mất nữa)
                     cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), color, 2)
@@ -238,6 +240,28 @@ def process_video_offline(input_path, output_path, model_helmet, model_coco,
 
     cap.release()
     writer.close()
+
+    # ---- CHẠY OCR TẬP TRUNG CHO CÁC TRACK VI PHẠM ----
+    # Chỉ chạy trên những track_id thực sự vi phạm theo Majority Voting
+    for track_id, votes in track_class_votes.items():
+        majority_cls = max(votes, key=votes.get)
+        
+        # Nếu thực sự vi phạm và có ứng viên frame chất lượng
+        if majority_cls == 1 and track_id in best_plate_candidates:
+            cand = best_plate_candidates[track_id]
+            plate_attempt_count += 1
+            try:
+                plate_info = read_plate_from_region(
+                    cand["frame"], cand["box"], model_plate, ocr_reader, track_id
+                )
+                if plate_info:
+                    plate_results[track_id] = plate_info
+                    plate_success_count += 1
+                    print(f"✅ Đọc biển số track {track_id}: '{plate_info['plate_text']}'")
+                else:
+                    print(f"❌ Track {track_id}: OCR không nhận diện được chữ ở frame nét nhất")
+            except Exception as e:
+                print(f"⚠️ Lỗi OCR track {track_id}: {e}")
 
     # ---- Quy đổi từ "vote theo frame" sang nhãn cuối cùng của mỗi track_id ----
     # Mỗi track_id được gán 1 nhãn duy nhất (with/without helmet) dựa trên class
@@ -272,11 +296,27 @@ def process_video_offline(input_path, output_path, model_helmet, model_coco,
     ) if total_unique_people else 0
 
     total_time = time.time() - t_start
+    processing_fps = round(frame_count / total_time, 2) if total_time > 0 else 0
+    # Hệ số: Ví dụ 1.5x nghĩa là xử lý nhanh gấp 1.5 lần tốc độ phát của video
+    speed_factor = round((frame_count / fps) / total_time, 2) if total_time > 0 else 0
+
     stats = {
+        # ---- Thống kê số lượng khung hình ----
         "total_frames": frame_count,
-        "processing_time_sec": round(total_time, 1),
-        "avg_ms_per_frame": round(total_time / frame_count * 1000, 0) if frame_count else 0,
-        # Số người thực tế (unique theo track_id), KHÔNG cộng dồn theo frame
+        "video_fps": round(fps, 2),
+        
+        # ---- Thống kê thời gian (Dùng cho Báo cáo / Dashboard) ----
+        "video_duration_sec": video_duration_sec,
+        "video_duration_formatted": format_seconds_to_time_str(video_duration_sec),
+        "total_processing_time_sec": round(total_time, 2),
+        "total_processing_time_formatted": format_seconds_to_time_str(total_time),
+        
+        # ---- Hiệu năng xử lý ----
+        "avg_ms_per_frame": round(total_time / frame_count * 1000, 1) if frame_count else 0,
+        "processing_fps": processing_fps,
+        "speed_factor": speed_factor,   # > 1.0 là nhanh hơn thời gian thực (real-time)
+
+        # ---- Dữ liệu vi phạm ----
         "with_helmet_count": unique_with_helmet,
         "without_helmet_count": unique_without_helmet,
         "unique_riders_tracked": len(confirmed_rider_ids),

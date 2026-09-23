@@ -271,7 +271,6 @@ def read_plate_from_region(frame, vehicle_box, model_plate, ocr_reader, track_id
     cleaned_text = clean_plate_text(raw_text_joined)
 
     if use_line_aware_correction:
-        # ---- Sửa lỗi THEO ĐÚNG VỊ TRÍ DÒNG (chính xác hơn nhiều) ----
         # Dòng TRÊN: có thể chứa chữ cái seri thật -> bảo vệ chữ cái đầu tiên,
         #            chỉ sửa các chữ cái xuất hiện SAU đó.
         # Dòng DƯỚI: luôn luôn toàn số -> ép TẤT CẢ chữ cái thành số, không

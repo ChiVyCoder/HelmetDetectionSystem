@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { UploadCloud } from 'lucide-react';
+import { UploadCloud, FileVideo } from 'lucide-react';
 
 export default function UploadPanel({ onAnalyze, isProcessing }) {
     const [selectedFile, setSelectedFile] = useState(null);
@@ -19,42 +19,58 @@ export default function UploadPanel({ onAnalyze, isProcessing }) {
     }
 
     return (
-        <div className="flex flex-col gap-4">
+        /* Khung ngoài mô phỏng GroupBox trong Windows Form */
+        <div className="flex flex-col gap-4 rounded border border-gray-300 bg-white p-4 shadow-sm">
+            
+            {/* Tiêu đề của GroupBox (Tùy chọn để trông giống phần mềm hơn) */}
+            <div className="text-sm font-bold text-gray-800 border-b border-gray-200 pb-2">
+                Nguồn Dữ Liệu Video
+            </div>
+
+            {/* Khu vực Drag & Drop giả lập File Dialog Area */}
             <div
                 onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={handleDrop}
                 onClick={() => inputRef.current?.click()}
-                className={`cursor-pointer rounded-2xl border-2 border-dashed px-6 py-12 text-center transition-colors ${
+                className={`cursor-pointer rounded border-2 border-dashed px-6 py-10 text-center transition-colors ${
                     isDragging
-                        ? 'border-amber-500 bg-slate-900'
-                        : 'border-slate-800 bg-slate-900/60 hover:border-slate-700'
+                        ? 'border-blue-500 bg-blue-50'
+                        : 'border-gray-300 bg-gray-50 hover:border-blue-400 hover:bg-gray-100'
                 }`}
             >
                 <input ref={inputRef} type="file" accept="video/*" onChange={handleFileChange} className="hidden" />
-                <UploadCloud className="mx-auto h-8 w-8 text-slate-600" />
-
+                
                 {selectedFile ? (
-                    <div className="mt-3">
-                        <p className="font-mono text-sm font-medium text-slate-200">{selectedFile.name}</p>
-                        <p className="mt-1 text-xs text-slate-500">
-                            {(selectedFile.size / (1024 * 1024)).toFixed(1)} MB
-                        </p>
+                    <div className="flex flex-col items-center gap-2">
+                        <FileVideo className="h-10 w-10 text-blue-600" />
+                        <div>
+                            <p className="font-mono text-sm font-bold text-gray-900">{selectedFile.name}</p>
+                            <p className="text-xs text-gray-500">
+                                Dung lượng: {(selectedFile.size / (1024 * 1024)).toFixed(1)} MB
+                            </p>
+                        </div>
                     </div>
                 ) : (
-                    <div className="mt-3">
-                        <p className="text-sm font-medium text-slate-300">Kéo thả video vào đây</p>
-                        <p className="mt-1 text-xs text-slate-500">hoặc nhấn để chọn file (mp4, mov)</p>
+                    <div className="flex flex-col items-center gap-2">
+                        <UploadCloud className="h-10 w-10 text-gray-400" />
+                        <div>
+                            <p className="text-sm font-semibold text-gray-700">Kéo thả tập tin video vào đây</p>
+                            <p className="text-xs text-gray-500">hoặc nhấn để mở hộp thoại chọn file (.mp4, .avi)</p>
+                        </div>
                     </div>
                 )}
             </div>
 
+            {/* Nút bấm (Button) - Thiết kế giống nút Action tiêu chuẩn của Windows */}
             <button
                 disabled={!selectedFile || isProcessing}
                 onClick={() => onAnalyze(selectedFile)}
-                className="rounded-xl bg-amber-500 px-5 py-3 text-sm font-semibold text-slate-950 transition-colors hover:bg-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-500 disabled:cursor-not-allowed disabled:bg-slate-800 disabled:text-slate-600"
+                className="flex items-center justify-center rounded border px-5 py-2.5 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 
+                disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-200 disabled:text-gray-400
+                border-blue-700 bg-blue-600 text-white hover:bg-blue-700"
             >
-                {isProcessing ? 'Đang phân tích...' : 'Phân tích video'}
+                {isProcessing ? 'Đang xử lý phân tích...' : 'Tiến hành Phân tích'}
             </button>
         </div>
     );
