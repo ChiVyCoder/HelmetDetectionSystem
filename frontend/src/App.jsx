@@ -94,7 +94,7 @@ export default function App() {
                             <h1 className="text-xl font-bold tracking-tight text-gray-800">
                                 HỆ THỐNG PHÁT HIỆN NGƯỜI KHÔNG ĐỘI NÓN BẢO HIỂM
                             </h1>
-                            <p className="text-sm text-gray-500">Module xử lý thị giác máy tính & Quản lý vi phạm</p>
+                            {/* <p className="text-sm text-gray-500">Module xử lý thị giác máy tính & Quản lý vi phạm</p> */}
                         </div>
                     </div>
 

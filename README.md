@@ -17,10 +17,11 @@ Người dùng -> Frontend -> Backend (Node.js) -> AI Service (Python) -> trả 
 ## 1. Chuẩn bị model (bắt buộc trước khi chạy)
 
 Copy 2 file model đã train vào `ai-service/models/`:
+
 - `best_45epoch.pt` (model helmet của bạn)
 - `yolov8n.pt` (model COCO, tải tự động qua Ultralytics nếu chưa có)
 
-Sau đó export sang OpenVINO để tăng tốc trên CPU (khuyến nghị, không bắt buộc):
+Sau đó export sang OpenVINO để tăng tốc trên CPU :
 
 ```bash
 cd ai-service
